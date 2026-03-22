@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luke Ellis — B2B Sales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --paper: #f5f2ed;
+    --accent: #c8401a;
+    --accent2: #1a4f8c;
+    --muted: #7a7469;
+    --rule: #d4cfc8;
+    --card: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    background: var(--ink);
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-left::after {
+    content: '';
+    position: absolute;
+    top: 0; right: -40px;
+    width: 80px; height: 100%;
+    background: var(--ink);
+    clip-path: polygon(0 0, 50% 0, 100% 100%, 0 100%);
+    z-index: 2;
+  }
+
+  .hero-right {
+    background: var(--paper);
+    padding: 80px 80px 80px 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-mark {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .hero-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 9vw, 130px);
+    line-height: 0.9;
+    color: #f5f2ed;
+    letter-spacing: 0.02em;
+    margin-bottom: 24px;
+  }
+
+  .hero-name span {
+    display: block;
+    color: var(--accent);
+  }
+
+  .hero-title-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #a09890;
+  }
+
+  .hero-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #a09890;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-item:hover { color: var(--accent); }
+
+  .contact-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* Right side hero content */
+  .hero-stat-row {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 50px;
+  }
+
+  .hero-stat {
+    opacity: 0;
+    animation: fadeUp 0.7s forwards;
+  }
+  .hero-stat:nth-child(1) { animation-delay: 0.2s; }
+  .hero-stat:nth-child(2) { animation-delay: 0.4s; }
+  .hero-stat:nth-child(3) { animation-delay: 0.6s; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    line-height: 1;
+    color: var(--accent2);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    max-width: 120px;
+    line-height: 1.4;
+  }
+
+  .hero-summary {
+    font-size: 16px;
+    line-height: 1.75;
+    color: #2a2a2a;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.8s forwards;
+  }
+
+  .hero-summary strong {
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 40px;
+    right: 60px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s forwards;
+  }
+
+  .scroll-cue::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 60px;
+    background: var(--muted);
+    animation: growLine 1s 1.5s forwards;
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 100px 60px;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 5vw, 72px);
+    line-height: 0.95;
+    color: var(--ink);
+    margin-bottom: 60px;
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--ink); }
+  #experience .section-title { color: #f5f2ed; }
+  #experience .section-label { color: var(--accent); }
+
+  .exp-grid {
+    display: grid;
+    gap: 2px;
+  }
+
+  .exp-card {
+    background: #111;
+    border: 1px solid #222;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    transition: border-color 0.3s, background 0.3s;
+    cursor: default;
+  }
+
+  .exp-card:hover {
+    border-color: var(--accent);
+    background: #141414;
+  }
+
+  .exp-meta {}
+
+  .exp-company {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .exp-role {
+    font-size: 14px;
+    color: #e0dbd4;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .exp-dates {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #666;
+    letter-spacing: 0.1em;
+  }
+
+  .exp-territory {
+    margin-top: 16px;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .exp-bullets li {
+    font-size: 14px;
+    color: #b0a89e;
+    line-height: 1.65;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .exp-bullets li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .exp-bullets li strong {
+    color: #e0dbd4;
+    font-weight: 500;
+  }
+
+  /* ── SKILLS ── */
+  #skills { background: var(--paper); }
+
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2px;
+  }
+
+  .skill-block {
+    background: var(--card);
+    padding: 40px;
+    border: 1px solid var(--rule);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+
+  .skill-block:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .skill-block-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 20px;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-size: 12px;
+    padding: 6px 14px;
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    background: var(--paper);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+
+  .tag:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* ── ACHIEVEMENTS ── */
+  #achievements { background: var(--accent2); }
+  #achievements .section-title { color: #fff; }
+  #achievements .section-label { color: #93b8e8; }
+
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .ach-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 40px;
+    transition: background 0.3s;
+  }
+
+  .ach-card:hover { background: rgba(255,255,255,0.1); }
+
+  .ach-icon {
+    font-size: 32px;
+    margin-bottom: 16px;
+  }
+
+  .ach-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: #fff;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  .ach-body {
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.65;
+  }
+
+  /* ── EDUCATION ── */
+  #education { background: var(--paper); }
+
+  .edu-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    padding: 60px;
+  }
+
+  .edu-school {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--accent2);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .edu-degree {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .edu-dates {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .edu-honors {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .honor-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    background: var(--paper);
+    border-left: 3px solid var(--accent);
+  }
+
+  .honor-text {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .honor-text strong { font-weight: 700; }
+
+  /* ── FOOTER / CTA ── */
+  footer {
+    background: var(--ink);
+    padding: 80px 60px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: #f5f2ed;
+    margin-bottom: 8px;
+  }
+
+  .footer-tagline {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 40px;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .footer-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #a09890;
+    text-decoration: none;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+  }
+
+  .footer-link:hover { color: var(--accent); }
+
+  .footer-link .dot { color: var(--accent); }
+
+  /* ── DIVIDER LINE ── */
+  .rule {
+    height: 1px;
+    background: var(--rule);
+    margin: 0 60px;
+    opacity: 0.4;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes growLine {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-left::after { display: none; }
+    .hero-right { padding: 60px 40px; }
+    .hero-left { padding: 60px 40px; min-height: 50vh; }
+    .hero-stat-row { gap: 24px; }
+    .exp-card { grid-template-columns: 1fr; }
+    .skills-layout, .ach-grid { grid-template-columns: 1fr; }
+    .edu-card { grid-template-columns: 1fr; gap: 32px; }
+    .section-inner { padding: 70px 32px; }
+    .scroll-cue { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="nav-mark">Portfolio — 2025</div>
+
+    <div>
+      <div class="hero-name">
+        Luke<span>Ellis</span>
+      </div>
+      <div class="hero-title-tag">B2B Outside Sales Representative</div>
+    </div>
+
+    <div class="hero-contact">
+      <a href="tel:2055318261" class="contact-item">
+        <span class="contact-dot"></span>
+        205-531-8261
+      </a>
+      <a href="mailto:kellis821@gmail.com" class="contact-item">
+        <span class="contact-dot"></span>
+        kellis821@gmail.com
+      </a>
+      <div class="contact-item">
+        <span class="contact-dot"></span>
+        Cullman, AL
+      </div>
+      <a href="https://linkedin.com/in/lukeeellis" target="_blank" class="contact-item">
+        <span class="contact-dot"></span>
+        linkedin.com/in/lukeeellis
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-stat-row">
+      <div class="hero-stat">
+        <div class="stat-num">$220K+</div>
+        <div class="stat-label">New Revenue in 8 Months</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">50%+</div>
+        <div class="stat-label">Above Peer New-Hire Average</div>
+      </div>
+      <div class="hero-stat">
+        <div class="stat-num">#1</div>
+        <div class="stat-label">Regional Appointments in a Week</div>
+      </div>
+    </div>
+
+    <p class="hero-summary">
+      Results-driven hunter with a <strong>proven record of generating $220K+ in new revenue</strong> within 8 months. Top performer across a competitive regional sales force, winning accounts from Cintas and Aramark through consultative selling, pain-point discovery, and relentless prospecting.
+    </p>
+  </div>
+
+  <div class="scroll-cue">Scroll</div>
+</div>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="section-label reveal">Work Experience</div>
+    <div class="section-title reveal">On The<br>Ground.</div>
+
+    <div class="exp-grid">
+      <div class="exp-card reveal">
+        <div class="exp-meta">
+          <div class="exp-company">UniFirst</div>
+          <div class="exp-role">Outside Sales Representative</div>
+          <div class="exp-dates">AUG 2025 — PRESENT</div>
+          <div class="exp-territory">Territory: Cullman → Russellville, AL<br>Uniform &amp; Facility Services</div>
+        </div>
+        <ul class="exp-bullets">
+          <li><strong>Generated $220,000+</strong> in new revenue within 8 months — outpacing new-hire peers by 50%+.</li>
+          <li>Booked the <strong>highest number of appointments in the region</strong> in a single week, earning direct recognition from the Regional Manager.</li>
+          <li>Named <strong>Employee of the Month (October 2025)</strong>, selected from the full branch for outstanding sales performance.</li>
+          <li>Execute high-volume <strong>cold calling and door-to-door prospecting</strong> daily across a multi-city territory, maintaining a full pipeline at every stage.</li>
+          <li>Lead discovery conversations to uncover pain points around cost, service reliability, and compliance — then tailor solutions to drive urgency and close.</li>
+          <li>Manage the <strong>full sales cycle independently</strong> — cold outreach through contract close — with zero supervision required.</li>
+          <li>Compete head-to-head against <strong>Cintas and Aramark</strong>, consistently winning new accounts on service quality and consultative value.</li>
+          <li>Utilize <strong>Microsoft Dynamics CRM</strong> to track prospects, manage cadences, and optimize daily territory routing.</li>
+          <li>Actively pursuing <strong>President's Club</strong> through disciplined pipeline management and continuous refinement of closing technique.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ACHIEVEMENTS ── -->
+<section id="achievements">
+  <div class="section-inner">
+    <div class="section-label reveal">Recognition</div>
+    <div class="section-title reveal">Earned,<br>Not Given.</div>
+
+    <div class="ach-grid">
+      <div class="ach-card reveal">
+        <div class="ach-icon">🏆</div>
+        <div class="ach-heading">Employee of the Month</div>
+        <div class="ach-body">Selected from the full branch in October 2025 for outstanding performance across sales activity, new revenue generation, and professionalism.</div>
+      </div>
+      <div class="ach-card reveal">
+        <div class="ach-icon">📈</div>
+        <div class="ach-heading">Regional #1 Appointments</div>
+        <div class="ach-body">Booked more new appointments than any other rep in the region in a single week — earning direct recognition from the Regional Manager.</div>
+      </div>
+      <div class="ach-card reveal">
+        <div class="ach-icon">💰</div>
+        <div class="ach-heading">$220K+ in 8 Months</div>
+        <div class="ach-body">Outpaced new-hire peers by 50%+ in new revenue generated, ranking among the top performers in a competitive regional sales force within the first year.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="section-label reveal">Core Competencies</div>
+    <div class="section-title reveal">The Full<br>Toolkit.</div>
+
+    <div class="skills-layout">
+      <div class="skill-block reveal">
+        <div class="skill-block-label">Sales Skills</div>
+        <div class="skill-tags">
+          <span class="tag">Cold Calling</span>
+          <span class="tag">Door-to-Door Prospecting</span>
+          <span class="tag">Territory Management</span>
+          <span class="tag">Pipeline Development</span>
+          <span class="tag">Objection Handling</span>
+          <span class="tag">Negotiation</span>
+          <span class="tag">Closing</span>
+          <span class="tag">Pain-Point Discovery</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <div class="skill-block-label">Tools &amp; Tech</div>
+        <div class="skill-tags">
+          <span class="tag">Microsoft Dynamics CRM</span>
+          <span class="tag">Microsoft Office Suite</span>
+          <span class="tag">Territory Routing</span>
+          <span class="tag">Pipeline Tracking</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <div class="skill-block-label">Soft Skills</div>
+        <div class="skill-tags">
+          <span class="tag">Communication</span>
+          <span class="tag">Presentation</span>
+          <span class="tag">Coachability</span>
+          <span class="tag">Time Management</span>
+          <span class="tag">Problem Solving</span>
+          <span class="tag">Competitive Drive</span>
+          <span class="tag">Self-Management</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EDUCATION ── -->
+<section id="education">
+  <div class="section-inner">
+    <div class="section-label reveal">Education</div>
+    <div class="section-title reveal">The Foundation.</div>
+
+    <div class="edu-card reveal">
+      <div>
+        <div class="edu-school">University of Alabama<br>at Birmingham</div>
+        <div class="edu-degree">B.S. in Digital Forensics</div>
+        <div class="edu-dates">2023 — 2025</div>
+      </div>
+      <div class="edu-honors">
+        <div class="honor-item">
+          <div class="honor-text"><strong>GPA: 3.5 / 4.0</strong><br>Graduated with honors in a rigorous technical curriculum.</div>
+        </div>
+        <div class="honor-item">
+          <div class="honor-text"><strong>Dean's List</strong><br>Recognized for academic excellence across multiple semesters.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-name">Luke Ellis</div>
+  <div class="footer-tagline">B2B Outside Sales · Cullman, AL</div>
+  <div class="footer-links">
+    <a href="tel:2055318261" class="footer-link"><span class="dot">·</span> 205-531-8261</a>
+    <a href="mailto:kellis821@gmail.com" class="footer-link"><span class="dot">·</span> kellis821@gmail.com</a>
+    <a href="https://linkedin.com/in/lukeeellis" target="_blank" class="footer-link"><span class="dot">·</span> LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+  // Intersection Observer for scroll reveals
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
