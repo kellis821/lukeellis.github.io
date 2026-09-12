@@ -1,9 +1,4 @@
-# Wraps portfolio.html (artifact body) into a standalone index.html for GitHub Pages.
-from pathlib import Path
-
-body = Path("portfolio.html").read_text(encoding="utf-8")
-
-HEAD = """<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -29,18 +24,1376 @@ HEAD = """<!doctype html>
   img{ max-width:100%; }
   [hidden]{ display:none !important; }
 </style>
-"""
+<title>Luke Ellis Field Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap">
 
-TAIL = """
+<style>
+/* ============================================================
+   LUKE ELLIS — FIELD RECORD
+   Committed single-theme dark world (deliberate, per direction).
+   Every colour painted explicitly from tokens; no host inheritance.
+   ============================================================ */
+
+:root{
+  color-scheme: dark;
+
+  --ink:      #0A0A0B;
+  --ink-2:    #0F0F11;
+  --panel:    #131315;
+  --panel-2:  #191917;
+  --bone:     #EDE9E1;
+  --dim:      #9A958B;   /* warm grey, biased toward the ember */
+  --faint:    #6A665E;
+  --rule:     #26241F;
+  --rule-2:   #363229;
+  --ember:    #C8471F;
+  --ember-lt: #E2622F;
+
+  --pad: clamp(1.15rem, 5vw, 6rem);
+  --maxw: 1600px;
+
+  --fd: 'Archivo', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
+  --fb: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --fm: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --fs: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+
+  --ease: cubic-bezier(.22,.68,.16,1);
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body{
+  margin: 0;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--fb);
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 400;
+  font-stretch: 100%;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* film grain — fixed, cheap, non-interactive */
+body::after{
+  content:"";
+  position: fixed; inset: -50%;
+  pointer-events: none;
+  z-index: 900;
+  opacity: .038;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='260' height='260' filter='url(%23n)'/></svg>");
+}
+
+::selection{ background: var(--ember); color: #fff; }
+
+a{ color: inherit; text-decoration: none; }
+
+:focus-visible{
+  outline: 2px solid var(--ember-lt);
+  outline-offset: 3px;
+}
+
+/* ---------- shared type roles ---------- */
+
+.eyebrow{
+  font-family: var(--fm);
+  font-size: .655rem;
+  font-weight: 500;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin: 0;
+}
+.eyebrow .tick{ color: var(--ember); }
+
+.display{
+  font-family: var(--fd);
+  font-stretch: 62%;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -.005em;
+  line-height: .86;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.prose{
+  max-width: 64ch;
+  color: var(--dim);
+  font-size: 1.0rem;
+  line-height: 1.75;
+}
+.prose strong{ color: var(--bone); font-weight: 600; }
+
+.wrap{
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-left: var(--pad);
+  padding-right: var(--pad);
+}
+
+section{ position: relative; }
+
+/* anchor targets must clear the 62px fixed nav */
+section[id], header[id]{ scroll-margin-top: 62px; }
+
+.rule-top{ border-top: 1px solid var(--rule); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+.nav{
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 800;
+  background: rgba(10,10,11,.72);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--rule);
+}
+.nav-in{
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  height: 62px;
+  display: flex; align-items: center; gap: 2rem;
+}
+.mono-mark{
+  font-family: var(--fd);
+  font-stretch: 62%;
+  font-weight: 800;
+  font-size: 1.32rem;
+  letter-spacing: .02em;
+  line-height: 1;
+  display: flex; align-items: baseline; gap: .5rem;
+}
+.mono-mark .dot{
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--ember);
+  display: inline-block;
+  transform: translateY(-2px);
+}
+.nav-links{
+  display: flex; gap: 1.9rem;
+  margin-left: auto;
+  list-style: none; padding: 0;
+}
+.nav-links a{
+  font-family: var(--fm);
+  font-size: .655rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--faint);
+  transition: color .3s var(--ease);
+  position: relative;
+  padding-block: .35rem;
+}
+.nav-links a:hover{ color: var(--bone); }
+.nav-links a.on{ color: var(--bone); }
+.nav-links a.on::after{
+  content:""; position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 1px; background: var(--ember);
+}
+.nav-cta{
+  font-family: var(--fm);
+  font-size: .655rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  border: 1px solid var(--rule-2);
+  color: var(--bone);
+  padding: .58rem 1.05rem;
+  transition: background .3s var(--ease), border-color .3s var(--ease), color .3s var(--ease);
+}
+.nav-cta:hover{ background: var(--ember); border-color: var(--ember); color: #fff; }
+
+.progress{
+  position: absolute; left: 0; bottom: -1px; height: 1px;
+  background: var(--ember);
+  width: 0%;
+}
+
+/* left-edge section rail */
+.rail{
+  position: fixed;
+  left: 18px; top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: var(--fm);
+  font-size: .6rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--faint);
+  z-index: 700;
+  display: flex; align-items: center; gap: 1rem;
+  pointer-events: none;
+}
+.rail .idx{ color: var(--ember); }
+.rail::after{
+  content:""; width: 1px; height: 52px; background: var(--rule-2);
+}
+@media (max-width: 1240px){ .rail{ display: none; } }
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.hero{
+  padding-top: clamp(7rem, 15vh, 11rem);
+  padding-bottom: clamp(2.5rem, 6vh, 4.5rem);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before{
+  content:"";
+  position: absolute;
+  width: min(1100px, 120vw); height: min(760px, 90vh);
+  right: -14%; top: -22%;
+  background: radial-gradient(ellipse at center, rgba(200,71,31,.19), rgba(200,71,31,0) 66%);
+  pointer-events: none;
+}
+.hero-in{
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+  position: relative;
+}
+.hero-top{
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 2rem; flex-wrap: wrap;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--rule);
+}
+.hero-name{
+  font-size: clamp(4.2rem, 17.5vw, 16rem);
+  line-height: .8;
+  letter-spacing: -.015em;
+  margin: clamp(1.6rem, 4vw, 3rem) 0 0;
+}
+.hero-name .l2{ display: block; color: var(--bone); }
+.hero-name .l1{ display: block; }
+
+.hero-grid{
+  display: grid;
+  grid-template-columns: minmax(0,1.55fr) minmax(0,1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: end;
+  margin-top: clamp(1.8rem, 4vw, 3rem);
+  padding-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.hero-thesis{
+  font-size: clamp(1.05rem, 1.7vw, 1.32rem);
+  line-height: 1.55;
+  color: var(--dim);
+  max-width: 46ch;
+  margin: 0 0 1.9rem;
+}
+.hero-thesis strong{ color: var(--bone); font-weight: 600; }
+
+.btn-row{ display: flex; gap: .75rem; flex-wrap: wrap; }
+.btn{
+  font-family: var(--fm);
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: .95rem 1.6rem;
+  border: 1px solid var(--rule-2);
+  color: var(--bone);
+  display: inline-flex; align-items: center; gap: .7rem;
+  transition: background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease), transform .35s var(--ease);
+}
+.btn .arrow{ transition: transform .35s var(--ease); }
+.btn:hover .arrow{ transform: translateX(4px); }
+.btn-solid{ background: var(--ember); border-color: var(--ember); color: #fff; }
+.btn-solid:hover{ background: var(--ember-lt); border-color: var(--ember-lt); }
+.btn-ghost:hover{ border-color: var(--bone); }
+
+/* hero spec column — the "vehicle data" block */
+.spec{
+  border-top: 1px solid var(--rule-2);
+}
+.spec-row{
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 1rem;
+  padding: .82rem 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.spec-k{
+  font-family: var(--fm);
+  font-size: .6rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.spec-v{
+  font-size: .93rem;
+  color: var(--bone);
+  line-height: 1.45;
+}
+.spec-v span{ display: block; color: var(--dim); font-size: .82rem; }
+
+.scroll-cue{
+  display: flex; align-items: center; gap: .8rem;
+  font-family: var(--fm);
+  font-size: .6rem; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--faint);
+  padding: 1.1rem 0 0;
+}
+.scroll-cue .bar{
+  width: 46px; height: 1px; background: var(--rule-2); position: relative; overflow: hidden;
+}
+.scroll-cue .bar::after{
+  content:""; position: absolute; inset: 0; background: var(--ember);
+  transform: translateX(-100%);
+}
+
+/* ============================================================
+   TICKER
+   ============================================================ */
+
+.ticker{
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background: var(--ink-2);
+  overflow: hidden;
+  padding: .85rem 0;
+}
+.ticker-track{
+  display: flex; width: max-content;
+  will-change: transform;
+}
+.ticker-track > div{ display: flex; }
+.ticker-item{
+  font-family: var(--fm);
+  font-size: .68rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding: 0 1.9rem;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 1.9rem;
+}
+.ticker-item::after{
+  content:"◆"; color: var(--ember); font-size: .5rem; letter-spacing: 0;
+}
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+
+.sec{
+  padding-top: clamp(4.5rem, 11vw, 9rem);
+  padding-bottom: clamp(4.5rem, 11vw, 9rem);
+}
+.sec-head{
+  display: flex; align-items: baseline; gap: 1.1rem;
+  padding-bottom: 1.15rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: clamp(2.2rem, 5vw, 4rem);
+  flex-wrap: wrap;
+}
+.sec-head .num{
+  font-family: var(--fm); font-size: .62rem; letter-spacing: .2em; color: var(--ember);
+}
+.sec-head .ttl{
+  font-family: var(--fm); font-size: .655rem; letter-spacing: .34em;
+  text-transform: uppercase; color: var(--faint);
+}
+.sec-head .note{
+  margin-left: auto;
+  font-family: var(--fm); font-size: .62rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--faint);
+}
+
+/* ============================================================
+   STATEMENT
+   ============================================================ */
+
+.statement{
+  font-size: clamp(1.35rem, 3.05vw, 2.55rem);
+  line-height: 1.3;
+  letter-spacing: -.012em;
+  color: var(--faint);
+  max-width: 22ch;
+  margin: 0;
+  font-weight: 400;
+}
+.statement-grid{
+  display: grid;
+  grid-template-columns: minmax(0,1.35fr) minmax(0,1fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+}
+.statement em{
+  font-style: normal;
+  color: var(--bone);
+}
+.statement .hot{ color: var(--ember-lt); font-style: normal; }
+.statement-grid .statement{ max-width: 26ch; }
+.side-note{
+  border-left: 1px solid var(--rule-2);
+  padding-left: clamp(1.2rem, 2.5vw, 2rem);
+}
+
+/* ============================================================
+   FIELD RECORD — metric grid (spec sheet, not cards)
+   ============================================================ */
+
+.metrics{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+.metric{
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: clamp(1.5rem, 3vw, 2.6rem) clamp(1.2rem, 2.4vw, 2.1rem);
+  position: relative;
+  transition: background .4s var(--ease);
+}
+.metric:hover{ background: var(--ink-2); }
+.metric:hover .m-val{ color: var(--ember-lt); }
+.m-k{
+  font-family: var(--fm);
+  font-size: .6rem; letter-spacing: .24em; text-transform: uppercase;
+  color: var(--faint);
+  display: block; margin-bottom: 1.4rem;
+}
+.m-val{
+  font-family: var(--fd);
+  font-stretch: 62%;
+  font-weight: 700;
+  font-size: clamp(2.9rem, 6.2vw, 5.1rem);
+  line-height: .88;
+  letter-spacing: -.02em;
+  color: var(--bone);
+  font-variant-numeric: tabular-nums;
+  transition: color .4s var(--ease);
+  display: block;
+}
+.m-sub{
+  margin: .95rem 0 0;
+  font-size: .84rem;
+  line-height: 1.5;
+  color: var(--dim);
+  max-width: 30ch;
+}
+.m-src{
+  font-family: var(--fm);
+  font-size: .56rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--faint);
+  margin-top: .7rem;
+}
+
+/* ============================================================
+   EXPERIENCE RECORDS
+   ============================================================ */
+
+.record{
+  border-top: 1px solid var(--rule);
+  padding: clamp(2.5rem, 6vw, 5rem) 0;
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0,1fr) minmax(0,1.15fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+}
+.record:last-of-type{ border-bottom: 1px solid var(--rule); }
+.rec-idx{
+  font-family: var(--fm);
+  font-size: .68rem; letter-spacing: .18em;
+  color: var(--ember);
+  padding-top: .5rem;
+}
+.rec-co{
+  font-size: clamp(2.3rem, 5.4vw, 4.4rem);
+  line-height: .9;
+  margin: 0 0 1.1rem;
+}
+.rec-meta{
+  display: flex; flex-direction: column; gap: .5rem;
+  padding-top: .3rem;
+}
+.rec-role{
+  font-family: var(--fm);
+  font-size: .66rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--bone);
+}
+.rec-dates, .rec-terr{
+  font-family: var(--fm);
+  font-size: .62rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--faint);
+}
+.rec-now{
+  display: inline-flex; align-items: center; gap: .45rem;
+  color: var(--ember-lt);
+}
+.rec-now .pulse{
+  width: 5px; height: 5px; border-radius: 50%; background: var(--ember);
+  box-shadow: 0 0 0 0 rgba(200,71,31,.6);
+}
+.rec-body p{ margin: 0 0 1.5rem; }
+.results{
+  list-style: none; margin: 0; padding: 0;
+  border-top: 1px solid var(--rule);
+}
+.results li{
+  padding: .95rem 0;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 6.6rem 1fr;
+  gap: 1.1rem;
+  align-items: baseline;
+  font-size: .93rem;
+  line-height: 1.55;
+  color: var(--dim);
+}
+.results .chip{
+  font-family: var(--fm);
+  font-size: .68rem;
+  letter-spacing: .04em;
+  color: var(--ember-lt);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.results .chip.q{ color: var(--faint); }
+.results li strong{ color: var(--bone); font-weight: 600; }
+.rec-foot{
+  font-family: var(--fm);
+  font-size: .6rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--faint);
+  margin-top: 1.1rem;
+  padding-left: .9rem;
+  border-left: 1px solid var(--ember);
+}
+
+/* ============================================================
+   MOTTO — full bleed
+   ============================================================ */
+
+.motto{
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  background:
+    radial-gradient(ellipse 90% 120% at 50% 120%, rgba(200,71,31,.22), rgba(200,71,31,0) 62%),
+    var(--ink-2);
+  text-align: center;
+  padding: clamp(5rem, 14vw, 11rem) var(--pad);
+}
+/* sized for the longest line ("IF YOU DO NOT QUIT"), not for a short one */
+.motto-l{
+  font-size: clamp(2rem, 7.4vw, 7.4rem);
+  line-height: .92;
+  letter-spacing: -.01em;
+  word-spacing: .1em;
+  color: var(--bone);
+  margin: 1.6rem 0 0;
+}
+
+/* ============================================================
+   REFERENCE
+   ============================================================ */
+
+.ref-grid{
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.05fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+.pullquote{
+  font-family: var(--fs);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.7rem, 3.5vw, 3rem);
+  line-height: 1.22;
+  color: var(--bone);
+  margin: 0;
+  letter-spacing: .002em;
+}
+.pullquote .mark{ color: var(--ember); }
+.ref-attr{
+  margin-top: 2.2rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule-2);
+  display: flex; flex-direction: column; gap: .3rem;
+}
+.ref-attr .who{
+  font-family: var(--fm);
+  font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--bone);
+}
+.ref-attr .what{
+  font-family: var(--fm);
+  font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--faint);
+}
+.letter{
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  padding: clamp(1.5rem, 3.2vw, 2.8rem);
+}
+.letter-head{
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding-bottom: 1.1rem; margin-bottom: 1.6rem;
+  border-bottom: 1px solid var(--rule-2);
+  font-family: var(--fm);
+  font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; color: var(--faint);
+  flex-wrap: wrap;
+}
+.letter p{
+  margin: 0 0 1.15rem;
+  font-size: .93rem;
+  line-height: 1.78;
+  color: var(--dim);
+  max-width: 62ch;
+}
+.letter p:last-child{ margin-bottom: 0; }
+.letter strong{ color: var(--bone); font-weight: 600; }
+.letter .sign{
+  font-family: var(--fs);
+  font-style: italic;
+  font-size: 1.28rem;
+  color: var(--bone);
+  margin-top: 1.7rem;
+}
+
+/* ============================================================
+   CAPABILITIES
+   ============================================================ */
+
+.caps{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.6rem, 4vw, 4rem);
+}
+.cap h3{
+  font-family: var(--fm);
+  font-size: .62rem; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--ember);
+  margin: 0 0 1.3rem;
+  padding-bottom: .9rem;
+  border-bottom: 1px solid var(--rule-2);
+  font-weight: 500;
+}
+.cap ul{ list-style: none; margin: 0; padding: 0; }
+.cap li{
+  padding: .68rem 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: .93rem;
+  color: var(--dim);
+  transition: color .3s var(--ease), padding-left .3s var(--ease);
+}
+.cap li:hover{ color: var(--bone); padding-left: .4rem; }
+
+/* ============================================================
+   CREDENTIALS
+   ============================================================ */
+
+.creds{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: clamp(1.6rem, 4vw, 4rem);
+}
+.cred{
+  border-top: 1px solid var(--rule-2);
+  padding-top: 1.6rem;
+}
+.cred-ttl{
+  font-size: clamp(1.5rem, 3vw, 2.35rem);
+  line-height: .96;
+  margin: 0 0 .5rem;
+}
+.cred-sub{
+  font-family: var(--fm);
+  font-size: .64rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--ember-lt);
+  margin: 0 0 1.5rem;
+}
+.cred .spec-row{ grid-template-columns: 9.5rem 1fr; }
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+
+.contact{
+  border-top: 1px solid var(--rule);
+  background:
+    radial-gradient(ellipse 80% 130% at 15% 100%, rgba(200,71,31,.16), rgba(200,71,31,0) 60%),
+    var(--ink);
+}
+.contact-h{
+  font-size: clamp(3.4rem, 13vw, 12rem);
+  line-height: .82;
+  margin: 0 0 clamp(2rem, 5vw, 3.6rem);
+}
+.contact-h .hot{ color: var(--ember); }
+.clist{ border-top: 1px solid var(--rule-2); }
+.crow{
+  display: grid;
+  grid-template-columns: 9rem minmax(0,1fr) 2rem;
+  gap: 1.2rem;
+  align-items: center;
+  padding: clamp(1.05rem, 2.2vw, 1.55rem) 0;
+  border-bottom: 1px solid var(--rule);
+  transition: padding-left .4s var(--ease), border-color .4s var(--ease);
+}
+a.crow:hover{ padding-left: 1rem; border-color: var(--rule-2); }
+a.crow:hover .cval{ color: var(--ember-lt); }
+a.crow:hover .carr{ transform: translateX(5px); color: var(--ember-lt); }
+.ckey{
+  font-family: var(--fm);
+  font-size: .6rem; letter-spacing: .24em; text-transform: uppercase; color: var(--faint);
+}
+.cval{
+  font-family: var(--fd);
+  font-stretch: 78%;
+  font-weight: 600;
+  font-size: clamp(1.15rem, 2.6vw, 1.95rem);
+  letter-spacing: -.005em;
+  color: var(--bone);
+  transition: color .4s var(--ease);
+  word-break: break-word;
+}
+.carr{ color: var(--faint); justify-self: end; transition: transform .4s var(--ease), color .4s var(--ease); }
+
+.foot{
+  border-top: 1px solid var(--rule);
+  padding: 1.6rem 0;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; flex-wrap: wrap;
+  font-family: var(--fm);
+  font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--faint);
+}
+
+/* ============================================================
+   MOTION — base state is always VISIBLE.
+   JS opts in by stamping data-motion="on" (skipped when the
+   viewer prefers reduced motion, or when JS never runs).
+   ============================================================ */
+
+[data-motion="on"] .r{
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity .95s var(--ease) var(--d, 0s),
+    transform .95s var(--ease) var(--d, 0s);
+}
+[data-motion="on"] .r.in{ opacity: 1; transform: none; }
+
+[data-motion="on"] .hero-name .l1,
+[data-motion="on"] .hero-name .l2{
+  opacity: 0;
+  transform: translateY(.14em);
+  transition: opacity 1.05s var(--ease) var(--d, 0s), transform 1.05s var(--ease) var(--d, 0s);
+}
+[data-motion="on"] .hero-name.in .l1,
+[data-motion="on"] .hero-name.in .l2{ opacity: 1; transform: none; }
+
+[data-motion="on"] .ticker-track{ animation: slide 42s linear infinite; }
+[data-motion="on"] .ticker:hover .ticker-track{ animation-play-state: paused; }
+@keyframes slide{ from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+
+[data-motion="on"] .scroll-cue .bar::after{ animation: sweep 2.4s var(--ease) infinite; }
+@keyframes sweep{
+  0%{ transform: translateX(-100%); }
+  55%{ transform: translateX(0); }
+  100%{ transform: translateX(100%); }
+}
+
+[data-motion="on"] .rec-now .pulse{ animation: pulse 2.6s ease-out infinite; }
+@keyframes pulse{
+  0%{ box-shadow: 0 0 0 0 rgba(200,71,31,.65); }
+  70%{ box-shadow: 0 0 0 8px rgba(200,71,31,0); }
+  100%{ box-shadow: 0 0 0 0 rgba(200,71,31,0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  *{ animation: none !important; transition: none !important; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1080px){
+  .metrics{ grid-template-columns: repeat(2, 1fr); }
+  .record{ grid-template-columns: 3.5rem minmax(0,1fr); }
+  .rec-body{ grid-column: 1 / -1; }
+  .caps{ grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 860px){
+  .nav-links{ display: none; }
+  .nav-cta{ margin-left: auto; }
+  .hero-grid{ grid-template-columns: 1fr; align-items: start; }
+  .statement-grid{ grid-template-columns: 1fr; }
+  .statement-grid .statement{ max-width: 20ch; }
+  .side-note{ border-left: 0; border-top: 1px solid var(--rule-2); padding-left: 0; padding-top: 1.4rem; }
+  .ref-grid{ grid-template-columns: 1fr; }
+  .creds{ grid-template-columns: 1fr; }
+  .crow{ grid-template-columns: 6.2rem minmax(0,1fr) 1.4rem; }
+}
+
+@media (max-width: 620px){
+  .metrics{ grid-template-columns: 1fr; }
+  .caps{ grid-template-columns: 1fr; }
+  .record{ grid-template-columns: 1fr; gap: 1.5rem; }
+  .rec-idx{ padding-top: 0; }
+  .results li{ grid-template-columns: 1fr; gap: .3rem; }
+  .spec-row{ grid-template-columns: 7rem 1fr; }
+  .cred .spec-row{ grid-template-columns: 7rem 1fr; }
+  .letter-head{ flex-direction: column; gap: .4rem; }
+}
+</style>
+</head>
+<body>
+<!-- ================= NAV ================= -->
+<nav class="nav">
+  <div class="nav-in">
+    <a href="#top" class="mono-mark" aria-label="Luke Ellis — top of page">LE<span class="dot" aria-hidden="true"></span></a>
+    <ul class="nav-links">
+      <li><a href="#record">Field Record</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#reference">Reference</a></li>
+      <li><a href="#capabilities">Capabilities</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Get in touch</a>
+  </div>
+  <div class="progress" id="progress"></div>
+</nav>
+
+<div class="rail" aria-hidden="true"><span class="idx" id="railIdx">01</span> <span id="railName">Introduction</span></div>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <div class="hero-in">
+
+    <div class="hero-top r">
+      <p class="eyebrow"><span class="tick">◆</span> &nbsp;Outside Sales &amp; Business Development</p>
+      <p class="eyebrow">Cullman, Alabama &nbsp;/&nbsp; Est. 2025</p>
+    </div>
+
+    <h1 class="display hero-name" id="heroName">
+      <span class="l1" style="--d:.05s">Luke</span>
+      <span class="l2" style="--d:.16s">Ellis</span>
+    </h1>
+
+    <div class="hero-grid">
+      <div class="r" style="--d:.34s">
+        <p class="hero-thesis">
+          I open doors that are supposed to stay shut. <strong>$220,000+ in total contract
+          value inside eight months</strong> with no prior sales experience — then built an
+          outbound program from nothing at an IT services firm, one cold dial and one
+          walk-in at a time.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn-solid" href="mailto:lukeeellis@proton.me">Start a conversation <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/in/lukeeellis" target="_blank" rel="noopener noreferrer">LinkedIn <span class="arrow" aria-hidden="true">↗</span></a>
+        </div>
+        <div class="scroll-cue"><span class="bar" aria-hidden="true"></span> Scroll</div>
+      </div>
+
+      <div class="spec r" style="--d:.46s">
+        <div class="spec-row">
+          <span class="spec-k">Current</span>
+          <span class="spec-v">Sales Development Representative<span>Evolv IT — managed IT services</span></span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-k">Territory</span>
+          <span class="spec-v">Alabama, statewide<span>Cold dials, email sequences, in-person walk-ins</span></span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-k">Certified</span>
+          <span class="spec-v">CompTIA Security+<span>January 24, 2025</span></span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-k">Degree</span>
+          <span class="spec-v">B.S. Digital Forensics<span>UAB — 3.5 GPA, Dean's List</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <div>
+      <span class="ticker-item">$220K+ Total Contract Value</span>
+      <span class="ticker-item">300% of Quota — First Full Quarter</span>
+      <span class="ticker-item">Employee of the Month — Oct 2025</span>
+      <span class="ticker-item">#1 in Region — Appointments Booked</span>
+      <span class="ticker-item">250+ Cold Dials per Week</span>
+      <span class="ticker-item">63% Meeting-to-Opportunity</span>
+      <span class="ticker-item">CompTIA Security+</span>
+    </div>
+    <div>
+      <span class="ticker-item">$220K+ Total Contract Value</span>
+      <span class="ticker-item">300% of Quota — First Full Quarter</span>
+      <span class="ticker-item">Employee of the Month — Oct 2025</span>
+      <span class="ticker-item">#1 in Region — Appointments Booked</span>
+      <span class="ticker-item">250+ Cold Dials per Week</span>
+      <span class="ticker-item">63% Meeting-to-Opportunity</span>
+      <span class="ticker-item">CompTIA Security+</span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STATEMENT ================= -->
+<section class="sec" id="about" data-name="Approach">
+  <div class="wrap">
+    <div class="sec-head r">
+      <span class="num">01</span>
+      <span class="ttl">The Approach</span>
+      <span class="note">Professional Summary</span>
+    </div>
+    <div class="statement-grid">
+      <p class="statement r">
+        Most reps <em>wait for the list.</em> I <span class="hot">build the territory</span>
+        and then I go knock on it.
+      </p>
+      <div class="side-note r" style="--d:.12s">
+        <p class="prose">
+          I came into outside sales with <strong>no experience and no book of business</strong>
+          and closed more than $220,000 in total contract value in my first eight months at
+          UniFirst — outpacing my new-hire peers by better than 50% and taking Employee of the
+          Month out of the full branch.
+        </p>
+        <p class="prose">
+          In 2026 I moved to Evolv IT as the company's <strong>only SDR</strong> and built the
+          outbound motion from scratch: target lists, call scripts, email sequences, CRM
+          workflow. That's 250+ cold dials a week plus in-person walk-ins across Alabama,
+          working past gatekeepers to practice managers and owners.
+        </p>
+        <p class="prose">
+          The unusual part: I hold a <strong>B.S. in Digital Forensics and a CompTIA Security+
+          certification</strong>. When I sell managed IT, I'm not reading a script at the
+          prospect — I can actually hold the technical conversation, and buyers can tell the
+          difference within about ninety seconds.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FIELD RECORD ================= -->
+<section class="sec rule-top" id="record" data-name="Field Record">
+  <div class="wrap">
+    <div class="sec-head r">
+      <span class="num">02</span>
+      <span class="ttl">Field Record</span>
+      <span class="note">Verified against employer reporting</span>
+    </div>
+
+    <div class="metrics">
+      <div class="metric r">
+        <span class="m-k">Total Contract Value</span>
+        <span class="m-val" data-to="220" data-pre="$" data-post="K+">$220K+</span>
+        <p class="m-sub">Closed in my first eight months, starting from zero accounts and zero sales experience.</p>
+        <p class="m-src">UniFirst / Aug 2025 — May 2026</p>
+      </div>
+      <div class="metric r" style="--d:.06s">
+        <span class="m-k">Quota Attainment</span>
+        <span class="m-val" data-to="300" data-post="%">300%</span>
+        <p class="m-sub">Hit triple quota in my first full quarter carrying a bag.</p>
+        <p class="m-src">UniFirst / First full quarter</p>
+      </div>
+      <div class="metric r" style="--d:.12s">
+        <span class="m-k">Vs. New-Hire Peers</span>
+        <span class="m-val" data-to="50" data-post="%+">50%+</span>
+        <p class="m-sub">Above the new-hire average for revenue generated in the same window.</p>
+        <p class="m-src">UniFirst / Branch comparison</p>
+      </div>
+      <div class="metric r" style="--d:.18s">
+        <span class="m-k">Annual Contract Value Sourced</span>
+        <span class="m-val" data-to="159" data-pre="$" data-post="K+">$159K+</span>
+        <p class="m-sub">Pure cold outreach, averaging $4,400 per account per month.</p>
+        <p class="m-src">Evolv IT / Self-generated</p>
+      </div>
+      <div class="metric r" style="--d:.24s">
+        <span class="m-k">Cold Dials per Week</span>
+        <span class="m-val" data-to="250" data-post="+">250+</span>
+        <p class="m-sub">Sustained weekly dial volume, plus in-person walk-ins across the state.</p>
+        <p class="m-src">Evolv IT / Weekly average</p>
+      </div>
+      <div class="metric r" style="--d:.3s">
+        <span class="m-k">Meeting to Opportunity</span>
+        <span class="m-val" data-to="63" data-post="%">63%</span>
+        <p class="m-sub">Five of eight self-generated appointments converted into active opportunities.</p>
+        <p class="m-src">Evolv IT / Self-generated pipeline</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCE ================= -->
+<section class="sec rule-top" id="experience" data-name="Experience">
+  <div class="wrap">
+    <div class="sec-head r">
+      <span class="num">03</span>
+      <span class="ttl">On the Ground</span>
+      <span class="note">Two roles / 2025 — Present</span>
+    </div>
+
+    <!-- Record 01 -->
+    <article class="record">
+      <div class="rec-idx r">01</div>
+      <div class="r" style="--d:.06s">
+        <h3 class="display rec-co">Evolv&nbsp;IT</h3>
+        <div class="rec-meta">
+          <span class="rec-role">Sales Development Representative</span>
+          <span class="rec-dates rec-now"><span class="pulse" aria-hidden="true"></span> May 2026 — Present</span>
+          <span class="rec-terr">Managed IT Services / Alabama</span>
+        </div>
+      </div>
+      <div class="rec-body r" style="--d:.12s">
+        <p class="prose">
+          I'm the only SDR at the company. There was no outbound motion when I arrived, so I
+          built one: target lists, call scripts, email sequences, and the CRM workflow that
+          holds it all together. Most days are 50+ dials and a route of walk-ins — getting
+          past gatekeepers to practice managers and owners who don't take cold calls.
+        </p>
+        <ul class="results">
+          <li><span class="chip">$159K+</span><span>Annual contract value sourced from cold outreach, averaging <strong>$4,400 per account per month</strong>.</span></li>
+          <li><span class="chip">63%</span><span>Meeting-to-opportunity rate — <strong>5 of 8</strong> self-generated appointments became active opportunities.</span></li>
+          <li><span class="chip">250+</span><span>Cold dials per week, plus in-person walk-ins across Alabama.</span></li>
+          <li><span class="chip q">Built</span><span>The entire outbound program from scratch — <strong>lists, scripts, sequences, and CRM workflow</strong> — as the company's first and only SDR.</span></li>
+          <li><span class="chip q">Fixed</span><span>Rebuilt CRM data quality in GoHighLevel and installed a follow-up and reminder system after finding deals lost to inconsistent record-keeping.</span></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Record 02 -->
+    <article class="record">
+      <div class="rec-idx r">02</div>
+      <div class="r" style="--d:.06s">
+        <h3 class="display rec-co">UniFirst</h3>
+        <div class="rec-meta">
+          <span class="rec-role">Outside Sales Representative</span>
+          <span class="rec-dates">Aug 2025 — May 2026</span>
+          <span class="rec-terr">Uniform &amp; Facility Services / North Alabama</span>
+        </div>
+      </div>
+      <div class="rec-body r" style="--d:.12s">
+        <p class="prose">
+          My first sales job. I walked in with a digital forensics degree, no book of business,
+          and a territory to figure out — and inside eight months I was one of the branch's top
+          performers, competing head-to-head against Cintas and Aramark and winning on
+          discovery and service, not price.
+        </p>
+        <ul class="results">
+          <li><span class="chip">$220K+</span><span>Total contract value generated in the first eight months — <strong>outpacing new-hire peers by 50%+</strong>.</span></li>
+          <li><span class="chip">300%</span><span>Of quota in my first full quarter.</span></li>
+          <li><span class="chip">#1</span><span>Most appointments booked in the region in a single week — earning <strong>direct recognition from the Regional Manager</strong>.</span></li>
+          <li><span class="chip q">Award</span><span><strong>Employee of the Month, October 2025</strong> — selected from the full branch for outstanding performance.</span></li>
+          <li><span class="chip q">Led</span><span>Planned and organized the entire branch's Easter seeding campaign, and shared phone word tracks and seeding concepts with the rest of the team.</span></li>
+        </ul>
+        <p class="rec-foot">Company acquired by a competitor — departed ahead of the announced branch restructuring.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ================= MOTTO ================= -->
+<section class="motto">
+  <p class="eyebrow">The Creed</p>
+  <h2 class="display motto-l r">If you do not quit<br>you will not fail</h2>
+</section>
+
+<!-- ================= REFERENCE ================= -->
+<section class="sec" id="reference" data-name="Reference">
+  <div class="wrap">
+    <div class="sec-head r">
+      <span class="num">04</span>
+      <span class="ttl">Reference</span>
+      <span class="note">Letter of recommendation / March 30, 2026</span>
+    </div>
+
+    <div class="ref-grid">
+      <div class="r">
+        <blockquote class="pullquote">
+          <span class="mark" aria-hidden="true">“</span>Luke came in with no sales experience
+          and quickly became one of the branch's top performers, exceeding the company's and my
+          own expectations.<span class="mark" aria-hidden="true">”</span>
+        </blockquote>
+        <div class="ref-attr">
+          <span class="who">Mike McKee</span>
+          <span class="what">Sales Manager, North Alabama — UniFirst Corporation</span>
+          <span class="what">Direct supervisor, Aug 2025 — May 2026</span>
+        </div>
+      </div>
+
+      <div class="letter r" style="--d:.12s">
+        <div class="letter-head">
+          <span>Letter of Recommendation</span>
+          <span>March 30, 2026</span>
+        </div>
+        <p>To Whom It May Concern,</p>
+        <p>
+          I am pleased to provide this letter of recommendation for Luke Ellis, who worked
+          under my supervision as an Outside Sales Representative at UniFirst. During his time
+          with our team, Luke demonstrated a <strong>relentless work ethic, strong sales
+          ability, and consistent professionalism</strong>.
+        </p>
+        <p>
+          He approached his role with a high level of preparation, ensuring he was ready for
+          both internal and external meetings, which translated into effective execution in the
+          field. Luke maintained a proactive approach to identifying and solving problems,
+          often addressing challenges before they escalated.
+        </p>
+        <p>
+          He was <strong>highly coachable</strong>, regularly seeking feedback and, more
+          importantly, executing on it. This ability to take direction and turn it into
+          measurable improvement set him apart. Additionally, Luke was a true team player. He
+          contributed to the broader success of the group by sharing phone word tracks and
+          ideas, including strategic “seeding” concepts for developing large accounts for him
+          and his peers.
+        </p>
+        <p>
+          Luke came in with no sales experience and quickly became one of the branch's top
+          performers, exceeding the company's and my own expectations. In addition to his
+          performance, Luke brought positive energy to our sales team that genuinely improved
+          the culture. His attitude, competitiveness, and willingness to support others
+          contributed to a stronger, more motivated environment. <strong>Had UniFirst not been
+          bought out, I'm positive he would have a fruitful and tenured career here.</strong>
+        </p>
+        <p>
+          I am confident that Luke will be an asset to any organization seeking a driven,
+          prepared, and team-oriented sales professional. He was, and is as I'm typing this,
+          <strong>genuinely one of my favorite employees to manage in my career</strong>.
+        </p>
+        <p class="sign">Mike McKee</p>
+        <p class="letter-head" style="border-bottom:0;border-top:1px solid var(--rule-2);padding-top:1rem;margin:1.4rem 0 0;">
+          <span>Sales Manager — North Alabama</span><span>UniFirst Corporation</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAPABILITIES ================= -->
+<section class="sec rule-top" id="capabilities" data-name="Capabilities">
+  <div class="wrap">
+    <div class="sec-head r">
+      <span class="num">05</span>
+      <span class="ttl">Capabilities</span>
+      <span class="note">What I bring to a territory</span>
+    </div>
+
+    <div class="caps">
+      <div class="cap r">
+        <h3>Sales</h3>
+        <ul>
+          <li>New business development</li>
+          <li>Door-to-door prospecting</li>
+          <li>Cold calling &amp; outbound sequencing</li>
+          <li>Territory management &amp; routing</li>
+          <li>Pain-point discovery</li>
+          <li>Objection handling</li>
+          <li>Negotiation &amp; closing</li>
+          <li>Pipeline development</li>
+        </ul>
+      </div>
+      <div class="cap r" style="--d:.08s">
+        <h3>Tools &amp; Systems</h3>
+        <ul>
+          <li>Microsoft Dynamics CRM</li>
+          <li>GoHighLevel</li>
+          <li>Excel &amp; Microsoft Office</li>
+          <li>Outbound list building</li>
+          <li>Email sequence design</li>
+          <li>Call scripting &amp; word tracks</li>
+          <li>CRM data hygiene &amp; follow-up systems</li>
+        </ul>
+      </div>
+      <div class="cap r" style="--d:.16s">
+        <h3>Technical Fluency</h3>
+        <ul>
+          <li>CompTIA Security+ certified</li>
+          <li>B.S. Digital Forensics</li>
+          <li>Managed IT services vocabulary</li>
+          <li>Security &amp; compliance conversations</li>
+          <li>DEA intelligence internship</li>
+          <li>Translating technical value to owners</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CREDENTIALS ================= -->
+<section class="sec rule-top" id="credentials" data-name="Credentials">
+  <div class="wrap">
+    <div class="sec-head r">
+      <span class="num">06</span>
+      <span class="ttl">Credentials</span>
+      <span class="note">Education &amp; certification</span>
+    </div>
+
+    <div class="creds">
+      <div class="cred r">
+        <h3 class="display cred-ttl">University of Alabama<br>at Birmingham</h3>
+        <p class="cred-sub">B.S. Digital Forensics</p>
+        <div class="spec">
+          <div class="spec-row"><span class="spec-k">Years</span><span class="spec-v">2023 — 2025</span></div>
+          <div class="spec-row"><span class="spec-k">GPA</span><span class="spec-v">3.5 / 4.0</span></div>
+          <div class="spec-row"><span class="spec-k">Honors</span><span class="spec-v">Dean's List</span></div>
+          <div class="spec-row"><span class="spec-k">Internship</span><span class="spec-v">DEA — intelligence<span>Federal investigative environment</span></span></div>
+        </div>
+      </div>
+      <div class="cred r" style="--d:.1s">
+        <h3 class="display cred-ttl">CompTIA<br>Security+</h3>
+        <p class="cred-sub">Industry certification</p>
+        <div class="spec">
+          <div class="spec-row"><span class="spec-k">Certified</span><span class="spec-v">January 24, 2025</span></div>
+          <div class="spec-row"><span class="spec-k">Domain</span><span class="spec-v">Security operations, risk &amp; compliance</span></div>
+          <div class="spec-row"><span class="spec-k">Applied to</span><span class="spec-v">Selling managed IT<span>Credibility with technical buyers and owners</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="sec contact" id="contact" data-name="Contact">
+  <div class="wrap">
+    <div class="sec-head r">
+      <span class="num">07</span>
+      <span class="ttl">Contact</span>
+      <span class="note">Cullman, Alabama</span>
+    </div>
+
+    <h2 class="display contact-h r">Let's<br><span class="hot">Talk.</span></h2>
+
+    <div class="clist">
+      <a class="crow r" href="mailto:lukeeellis@proton.me">
+        <span class="ckey">Email</span>
+        <span class="cval">lukeeellis@proton.me</span>
+        <span class="carr" aria-hidden="true">→</span>
+      </a>
+      <a class="crow r" style="--d:.06s" href="tel:+12055318261">
+        <span class="ckey">Phone</span>
+        <span class="cval">205&thinsp;·&thinsp;531&thinsp;·&thinsp;8261</span>
+        <span class="carr" aria-hidden="true">→</span>
+      </a>
+      <a class="crow r" style="--d:.12s" href="https://www.linkedin.com/in/lukeeellis" target="_blank" rel="noopener noreferrer">
+        <span class="ckey">LinkedIn</span>
+        <span class="cval">/in/lukeeellis</span>
+        <span class="carr" aria-hidden="true">↗</span>
+      </a>
+      <div class="crow r" style="--d:.18s">
+        <span class="ckey">Based in</span>
+        <span class="cval">Cullman, Alabama</span>
+        <span class="carr" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span>Luke Ellis — Outside Sales &amp; Business Development</span>
+      <span>Built in Cullman, Alabama</span>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reduce) root.setAttribute('data-motion', 'on');
+
+  /* ---- scroll reveals -------------------------------------------------- */
+  var reveals = document.querySelectorAll('.r');
+  var heroName = document.getElementById('heroName');
+
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+
+    reveals.forEach(function (el) { io.observe(el); });
+    requestAnimationFrame(function () { heroName.classList.add('in'); });
+  } else {
+    reveals.forEach(function (el) { el.classList.add('in'); });
+    heroName.classList.add('in');
+  }
+
+  /* ---- metric count-up ------------------------------------------------- */
+  var nums = document.querySelectorAll('.m-val[data-to]');
+  if (!reduce && 'IntersectionObserver' in window) {
+    var nio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        nio.unobserve(e.target);
+        var el = e.target;
+        var final = el.textContent;
+        var to = parseFloat(el.getAttribute('data-to'));
+        var pre = el.getAttribute('data-pre') || '';
+        var post = el.getAttribute('data-post') || '';
+        var start = null, dur = 1100;
+        function step(ts) {
+          if (start === null) start = ts;
+          var p = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = pre + Math.round(to * eased) + post;
+          if (p < 1) requestAnimationFrame(step);
+          else el.textContent = final;
+        }
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.4 });
+    nums.forEach(function (el) { nio.observe(el); });
+  }
+
+  /* ---- scroll progress + nav state + section rail ---------------------- */
+  var bar = document.getElementById('progress');
+  var railIdx = document.getElementById('railIdx');
+  var railName = document.getElementById('railName');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('[data-name]'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav-links a'));
+  var ticking = false;
+
+  function onScroll() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = h > 0 ? (window.scrollY / h) * 100 : 0;
+    bar.style.width = pct.toFixed(2) + '%';
+
+    var mid = window.scrollY + window.innerHeight * 0.35;
+    var current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].offsetTop <= mid) current = sections[i];
+    }
+
+    if (current) {
+      var i2 = sections.indexOf(current) + 1;
+      railIdx.textContent = (i2 < 10 ? '0' : '') + i2;
+      railName.textContent = current.getAttribute('data-name');
+      var id = current.id;
+      links.forEach(function (a) {
+        a.classList.toggle('on', a.getAttribute('href') === '#' + id);
+      });
+    } else {
+      railIdx.textContent = '01';
+      railName.textContent = 'Introduction';
+      links.forEach(function (a) { a.classList.remove('on'); });
+    }
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+
+  onScroll();
+})();
+</script>
 </body>
 </html>
-"""
-
-# split: everything up to the first HTML comment marker is head-safe (title/link/style)
-marker = "<!-- ================= NAV ================= -->"
-head_part, body_part = body.split(marker, 1)
-body_part = marker + body_part
-
-out = HEAD + head_part.strip() + "\n</head>\n<body>\n" + body_part.strip() + TAIL
-Path("index.html").write_text(out, encoding="utf-8")
-print("index.html written:", len(out), "bytes")
